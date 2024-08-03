@@ -39,6 +39,21 @@ nodes:
         mtu: 1500
         vip:
           ip: "192.168.110.42"
+  - hostname: "kube02"
+    ipAddress: "192.168.110.11"
+    installDisk: "/dev/nvme0n1"
+    talosImageURL: factory.talos.dev/installer/376567988ad370138ad8b2698212367b8edcb69b5fd68c80be1f2ec7d603b4ba
+    controlPlane: false
+    networkInterfaces:
+      - deviceSelector:
+          hardwareAddr: "e8:ff:1e:d2:c6:99"
+        dhcp: false
+        addresses:
+          - "192.168.110.11/24"
+        routes:
+          - network: 0.0.0.0/0
+            gateway: "192.168.110.1"
+        mtu: 1500
 
 # Global patches
 patches:
