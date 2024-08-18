@@ -6,15 +6,15 @@ talosVersion: v1.7.6
 kubernetesVersion: v1.31.0
 
 clusterName: "homelab"
-endpoint: https://192.168.110.42:6443
+endpoint: https://192.168.110.39:6443
 clusterPodNets:
   - "10.69.0.0/16"
 clusterSvcNets:
   - "10.96.0.0/16"
 additionalApiServerCertSans: &sans
-  - "192.168.110.42"
+  - "192.168.110.39"
   - 127.0.0.1 # KubePrism
-  - "kube.idemo.to"
+  - "homelab.idemo.to"
 additionalMachineCertSans: *sans
 
 # Disable built-in Flannel to use Cilium
@@ -22,8 +22,8 @@ cniConfig:
   name: none
 
 nodes:
-  - hostname: "kube01"
-    ipAddress: "192.168.110.10"
+  - hostname: "kube00"
+    ipAddress: "192.168.110.205"
     installDisk: "/dev/nvme0n1"
     talosImageURL: factory.talos.dev/installer/376567988ad370138ad8b2698212367b8edcb69b5fd68c80be1f2ec7d603b4ba
     controlPlane: true
@@ -32,28 +32,47 @@ nodes:
           hardwareAddr: "e8:ff:1e:d1:9d:49"
         dhcp: false
         addresses:
-          - "192.168.110.10/24"
+          - "192.168.110.205/24"
         routes:
           - network: 0.0.0.0/0
             gateway: "192.168.110.1"
         mtu: 1500
         vip:
-          ip: "192.168.110.42"
-  - hostname: "kube02"
-    ipAddress: "192.168.110.11"
-    installDisk: "/dev/nvme0n1"
+          ip: "192.168.110.39"
+  - hostname: "kube01"
+    ipAddress: "192.168.110.134"
+    installDisk: "/dev/sdb"
     talosImageURL: factory.talos.dev/installer/376567988ad370138ad8b2698212367b8edcb69b5fd68c80be1f2ec7d603b4ba
-    controlPlane: false
+    controlPlane: true
     networkInterfaces:
       - deviceSelector:
           hardwareAddr: "e8:ff:1e:d2:c6:99"
         dhcp: false
         addresses:
-          - "192.168.110.11/24"
+          - "192.168.110.134/24"
         routes:
           - network: 0.0.0.0/0
             gateway: "192.168.110.1"
         mtu: 1500
+        vip:
+          ip: "192.168.110.39"
+  - hostname: "kube02"
+    ipAddress: "192.168.110.114"
+    installDisk: "/dev/sda"
+    talosImageURL: factory.talos.dev/installer/376567988ad370138ad8b2698212367b8edcb69b5fd68c80be1f2ec7d603b4ba
+    controlPlane: true
+    networkInterfaces:
+      - deviceSelector:
+          hardwareAddr: "48:4d:7e:dc:44:2a"
+        dhcp: false
+        addresses:
+          - "192.168.110.114/24"
+        routes:
+          - network: 0.0.0.0/0
+            gateway: "192.168.110.1"
+        mtu: 1500
+        vip:
+          ip: "192.168.110.39"
 
 # Global patches
 patches:
@@ -62,7 +81,7 @@ patches:
     machine:
       network:
         nameservers:
-          - 192.168.100.39
+          - 192.168.110.1
   - "@./patches/global/cluster-discovery.yaml"
   - "@./patches/global/containerd.yaml"
   - "@./patches/global/disable-search-domain.yaml"
