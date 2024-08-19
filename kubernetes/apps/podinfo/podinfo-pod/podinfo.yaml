@@ -15,5 +15,3 @@ spec:
   targetNamespace: podinfo
   timeout: 3m0s
   wait: true
-resources:
-- ./namespace.yaml
